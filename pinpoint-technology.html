@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pinpoint Technology - Hardware & Software</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden;
+            background: #000;
+        }
+        
+        .container {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .section {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            transition: transform 0.9s cubic-bezier(0.77, 0, 0.175, 1);
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        
+        .hardware-section {
+            background: #ffffff;
+            transform: translateX(0);
+            z-index: 2;
+        }
+        
+        .software-section {
+            background: linear-gradient(135deg, #059669 0%, #10b981 50%, #34d399 100%);
+            transform: translateX(100%);
+            z-index: 1;
+        }
+        
+        .container.show-software .hardware-section {
+            transform: translateX(-100%);
+        }
+        
+        .container.show-software .software-section {
+            transform: translateX(0);
+        }
+        
+        .content {
+            max-width: 1400px;
+            width: 100%;
+            padding: 100px 80px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+            min-height: 100vh;
+        }
+        
+        .text-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .hardware-section .text-content {
+            color: #000;
+        }
+        
+        .software-section .text-content {
+            color: #ffffff;
+        }
+        
+        .section-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+        
+        .hardware-section .section-label {
+            color: #059669;
+        }
+        
+        .software-section .section-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 48px;
+            line-height: 1.05;
+            letter-spacing: -2px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-bottom: 56px;
+        }
+        
+        .feature-item {
+            font-size: 22px;
+            line-height: 1.7;
+            margin-bottom: 28px;
+            padding-left: 36px;
+            position: relative;
+            font-weight: 400;
+        }
+        
+        .hardware-section .feature-item {
+            color: #374151;
+        }
+        
+        .software-section .feature-item {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 24px;
+            font-weight: 500;
+        }
+        
+        .hardware-section .feature-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 20px;
+            height: 2px;
+            background: #10b981;
+        }
+        
+        .software-section .feature-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 20px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .media-container {
+            position: relative;
+            width: 100%;
+            height: 650px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .cad-placeholder {
+            width: 100%;
+            height: 100%;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .mockup-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1000px;
+        }
+        
+        .phone-mockup {
+            width: 380px;
+            height: 780px;
+            background: #ffffff;
+            border-radius: 50px;
+            padding: 16px;
+            box-shadow: 
+                0 0 0 12px #1a1a1a,
+                0 50px 100px -20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border-radius: 36px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .app-header {
+            padding: 60px 24px 24px;
+            background: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .app-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #059669;
+            margin-bottom: 8px;
+        }
+        
+        .app-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+        
+        .app-content {
+            padding: 24px;
+        }
+        
+        .zone-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            animation: slideIn 1.5s ease-in-out infinite;
+        }
+        
+        .zone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .zone-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+        }
+        
+        .zone-status {
+            font-size: 12px;
+            padding: 4px 12px;
+            background: #d1fae5;
+            color: #059669;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+        
+        .zone-details {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+        
+        @keyframes slideIn {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(-8px); opacity: 0.9; }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateY(-5deg); }
+            50% { transform: translateY(-15px) rotateY(5deg); }
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 18px 40px;
+            border-radius: 50px;
+            font-size: 17px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.3px;
+        }
+        
+        .hardware-section .btn-primary {
+            background: #10b981;
+            color: white;
+        }
+        
+        .hardware-section .btn-primary:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(16, 185, 129, 0.4);
+        }
+        
+        .hardware-section .btn-secondary {
+            background: transparent;
+            color: #059669;
+            border: 2px solid #10b981;
+        }
+        
+        .hardware-section .btn-secondary:hover {
+            background: #f0fdf4;
+            transform: translateY(-2px);
+        }
+        
+        .software-section .btn-primary {
+            background: #ffffff;
+            color: #059669;
+        }
+        
+        .software-section .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -10px rgba(255, 255, 255, 0.5);
+        }
+        
+        .software-section .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .software-section .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+            transform: translateY(-2px);
+        }
+        
+        .toggle-nav {
+            position: fixed;
+            bottom: 48px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            padding: 6px;
+            border-radius: 100px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .toggle-btn {
+            padding: 14px 36px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 700;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.5);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 0.5px;
+        }
+        
+        .toggle-btn.active {
+            background: #10b981;
+            color: white;
+        }
+        
+        @media (max-width: 1024px) {
+            .content {
+                grid-template-columns: 1fr;
+                gap: 60px;
+                padding: 80px 40px;
+                min-height: auto;
+            }
+            
+            h1 { font-size: 48px; }
+            .feature-item { font-size: 18px; }
+            .media-container { height: 500px; }
+            .phone-mockup { 
+                width: 280px; 
+                height: 580px;
+                border-radius: 40px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .content { padding: 40px 24px; }
+            h1 { font-size: 36px; }
+            .cta-buttons { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+            .toggle-nav { bottom: 24px; }
+            .phone-mockup { 
+                width: 240px; 
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <!-- Hardware Section (White) -->
+        <div class="section hardware-section">
+            <div class="content">
+                <div class="text-content">
+                    <div class="section-label">Hardware</div>
+                    <h1>Built for<br>Efficiency</h1>
+                    <ul class="feature-list">
+                        <li class="feature-item">One head does the work of multiple valves and heads</li>
+                        <li class="feature-item">Installation requires up to 80% less trenching and piping</li>
+                        <li class="feature-item">Each unit is built durable for large commercial sites</li>
+                    </ul>
+                    
+                    <div class="cta-buttons">
+                        <a href="#demo" class="btn btn-primary">Try the Demo</a>
+                        <a href="#consultation" class="btn btn-secondary">Request Consultation</a>
+                    </div>
+                </div>
+                
+                <div class="media-container">
+                    <div class="cad-placeholder">
+                        <div style="text-align: center; color: #9ca3af;">
+                            <div style="font-size: 64px; margin-bottom: 16px;">⚙️</div>
+                            <div style="font-size: 20px; font-weight: 700; color: #059669;">CAD Model</div>
+                            <div style="font-size: 15px; margin-top: 8px; opacity: 0.7;">Pinpoint Sprinkler System</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Software Section (Green) -->
+        <div class="section software-section">
+            <div class="content">
+                <div class="media-container">
+                    <div class="mockup-container">
+                        <div class="phone-mockup">
+                            <div class="phone-screen">
+                                <div class="app-header">
+                                    <div class="app-title">Pinpoint</div>
+                                    <div class="app-subtitle">Smart Irrigation Control</div>
+                                </div>
+                                <div class="app-content">
+                                    <div class="zone-card" style="animation-delay: 0s;">
+                                        <div class="zone-header">
+                                            <div class="zone-name">North Lawn</div>
+                                            <div class="zone-status">Active</div>
+                                        </div>
+                                        <div class="zone-details">
+                                            Coverage: 2,400 sq ft<br>
+                                            Next run: 6:00 AM
+                                        </div>
+                                    </div>
+                                    <div class="zone-card" style="animation-delay: 0.5s;">
+                                        <div class="zone-header">
+                                            <div class="zone-name">Garden Beds</div>
+                                            <div class="zone-status">Scheduled</div>
+                                        </div>
+                                        <div class="zone-details">
+                                            Coverage: 800 sq ft<br>
+                                            Next run: 7:30 AM
+                                        </div>
+                                    </div>
+                                    <div class="zone-card" style="animation-delay: 1s;">
+                                        <div class="zone-header">
+                                            <div class="zone-name">East Field</div>
+                                            <div class="zone-status">Optimized</div>
+                                        </div>
+                                        <div class="zone-details">
+                                            Coverage: 5,200 sq ft<br>
+                                            Weather-adjusted
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-content">
+                    <div class="section-label">Software</div>
+                    <h1>Intelligence<br>Built In</h1>
+                    <ul class="feature-list">
+                        <li class="feature-item">Draw zones in minutes using the Pinpoint app</li>
+                        <li class="feature-item">Spray patterns adjust instantly without swapping nozzles</li>
+                        <li class="feature-item">Schedules update automatically with weather and soil data</li>
+                    </ul>
+                    
+                    <div class="cta-buttons">
+                        <a href="#demo" class="btn btn-primary">Try the Demo</a>
+                        <a href="#consultation" class="btn btn-secondary">Request Consultation</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Toggle Navigation -->
+    <div class="toggle-nav">
+        <button class="toggle-btn active" id="hardwareBtn">Hardware</button>
+        <button class="toggle-btn" id="softwareBtn">Software</button>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const hardwareBtn = document.getElementById('hardwareBtn');
+        const softwareBtn = document.getElementById('softwareBtn');
+        
+        function showSoftware() {
+            container.classList.add('show-software');
+            hardwareBtn.classList.remove('active');
+            softwareBtn.classList.add('active');
+        }
+        
+        function showHardware() {
+            container.classList.remove('show-software');
+            softwareBtn.classList.remove('active');
+            hardwareBtn.classList.add('active');
+        }
+        
+        hardwareBtn.addEventListener('click', showHardware);
+        softwareBtn.addEventListener('click', showSoftware);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') showHardware();
+            if (e.key === 'ArrowRight') showSoftware();
+        });
+        
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        container.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        container.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            if (touchEndX < touchStartX - 50) showSoftware();
+            if (touchEndX > touchStartX + 50) showHardware();
+        });
+    </script>
+</body>
+</html>
