@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Pinpoint Irrigation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #ffffff;
+            color: #111827;
+            overflow-x: hidden;
+        }
+        
+        .hero-section {
+            background: #0077C2;
+            padding: 120px 80px;
+            text-align: center;
+            color: white;
+        }
+        
+        .mission-label {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            opacity: 0.9;
+        }
+        
+        .mission-text {
+            font-size: 48px;
+            font-weight: 800;
+            line-height: 1.2;
+            max-width: 900px;
+            margin: 0 auto;
+            letter-spacing: -1px;
+        }
+        
+        .story-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 80px;
+        }
+        
+        .section-header {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: #0077C2;
+            margin-bottom: 24px;
+        }
+        
+        h2 {
+            font-size: 56px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            line-height: 1.1;
+            letter-spacing: -1.5px;
+        }
+        
+        .story-text {
+            font-size: 20px;
+            line-height: 1.8;
+            color: #374151;
+            font-weight: 400;
+        }
+        
+        .team-section {
+            background: #f9fafb;
+            padding: 100px 80px;
+        }
+        
+        .team-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .team-card {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .team-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 24px;
+            border: 4px solid #0077C2;
+        }
+        
+        .team-role {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #0077C2;
+            margin-bottom: 12px;
+        }
+        
+        .team-name {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: #111827;
+        }
+        
+        .team-bio {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #6b7280;
+            font-weight: 400;
+            text-align: left;
+        }
+        
+        .affiliations-section {
+            background: #0077C2;
+            padding: 80px;
+            text-align: center;
+        }
+        
+        .affiliations-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .affiliations-title {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 40px;
+        }
+        
+        .affiliations-grid {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+        
+        .affiliation-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 32px 48px;
+            border-radius: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        @media (max-width: 768px) {
+            .hero-section {
+                padding: 80px 40px;
+            }
+            
+            .mission-text {
+                font-size: 32px;
+            }
+            
+            .story-section {
+                padding: 60px 40px;
+            }
+            
+            h2 {
+                font-size: 36px;
+            }
+            
+            .story-text {
+                font-size: 18px;
+            }
+            
+            .team-section {
+                padding: 60px 40px;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .affiliations-section {
+                padding: 60px 40px;
+            }
+            
+            .affiliations-grid {
+                gap: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero / Mission Section -->
+    <section class="hero-section">
+        <div class="mission-label">About Us</div>
+        <h1 class="mission-text">Building the Future of Smart Irrigation</h1>
+    </section>
+    
+    <!-- Founders Story Section -->
+    <section class="story-section">
+        <div class="section-header">Our Story</div>
+        <h2>It Started with a Lawnmower</h2>
+        <p class="story-text">
+            Our partnership started with a lawnmower. As teenagers, we built a lawn care business from the ground up—a frontline education in the staggering waste of traditional irrigation. The spark for Pinpoint hit us years later while installing another archaic sprinkler system in my rental property. It was infuriating how little had changed.
+            <br><br>
+            After moving to the drought-plagued Southwest regions of the US, the problem came into sharp focus; this wasn't just about waste, it was about necessity. We remained close friends as we began our careers and have formed a bond that has allowed us to make unprecedented progress developing intelligent hardware that Commercial Real Estate needs and wants.
+            <br><br>
+            We have the necessary skills and relationships to solve a problem we've understood our entire lives.
+        </p>
+    </section>
+    
+    <!-- Team Section -->
+    <section class="team-section">
+        <div class="team-container">
+            <div class="section-header">Our Team</div>
+            <h2>Built by Experts</h2>
+            
+            <div class="team-grid">
+                <!-- Stephen Herrera -->
+                <div class="team-card">
+                    <img src="images/stephen.jpg" alt="Stephen Herrera" class="team-photo">
+                    <div class="team-role">CEO & Co-Founder</div>
+                    <div class="team-name">Stephen Herrera</div>
+                    <div class="team-bio">
+                        Stephen spent years analyzing deals in corporate banking at Regions, so he knows exactly how much money gets wasted—especially on water. As an MBA candidate at Texas McCombs and co-founder of Pinpoint Irrigation, he's combining his finance chops with startup grit to build irrigation systems that actually make financial sense.
+                    </div>
+                </div>
+                
+                <!-- Kevin Hartzog -->
+                <div class="team-card">
+                    <img src="images/kevin.jpg" alt="Kevin Hartzog" class="team-photo">
+                    <div class="team-role">CTO & Co-Founder</div>
+                    <div class="team-name">Kevin Hartzog</div>
+                    <div class="team-bio">
+                        Kevin is a propulsion engineer and patent-holding inventor who spent his career optimizing rocket turbopumps. Now he's applying that precision engineering to eliminate water waste with Pinpoint Irrigation.
+                    </div>
+                </div>
+                
+                <!-- Richard Amato -->
+                <div class="team-card">
+                    <img src="images/richard.jpg" alt="Richard Amato" class="team-photo">
+                    <div class="team-role">Executive Director, ATI</div>
+                    <div class="team-name">Richard Amato</div>
+                    <div class="team-bio">
+                        Richard has spent over two decades proving that sustainability and business success aren't mutually exclusive. As Executive Director of the Austin Technology Incubator at UT Austin, he's helped hundreds of clean energy ventures turn big ideas into real companies—starting with founding the first-ever Clean Energy Incubator back in 2001, long before "cleantech" was cool.
+                    </div>
+                </div>
+                
+                <!-- Anna Herrera -->
+                <div class="team-card">
+                    <img src="images/anna.jpg" alt="Anna Herrera" class="team-photo">
+                    <div class="team-role">Senior Software Engineer, Google</div>
+                    <div class="team-name">Anna Herrera</div>
+                    <div class="team-bio">
+                        Anna is a Senior Software Engineer at Google specializing in low-power embedded systems for Android devices. With expertise in building scalable distributed systems and a track record of delivering measurable efficiency gains, she advises Pinpoint on system architecture and hardware optimization.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Affiliations Section -->
+    <section class="affiliations-section">
+        <div class="affiliations-container">
+            <div class="affiliations-title">Supported By</div>
+            <div class="affiliations-grid">
+                <div class="affiliation-item">Austin Technology Incubator</div>
+                <div class="affiliation-item">Texas Momentum</div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
