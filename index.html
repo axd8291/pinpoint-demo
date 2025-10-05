@@ -1,493 +1,467 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pinpoint Irrigation - Interactive Demo</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
-            min-height: 100vh;
+        :root{
+            --brand:#0077C2;
+            --brand-dark:#0067A6;
+            --brand-verylight:#EAF5FD;
         }
-        .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
-        .card { background: white; border-radius: 16px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); padding: 32px; }
-        .hero-card { max-width: 896px; margin: 0 auto; }
-        
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,Cantarell,sans-serif;
+            background:linear-gradient(135deg,#eff6ff 0%,#f0f9ff 100%);
+            min-height:100vh;
+        }
+        .container{max-width:1280px;margin:0 auto;padding:24px;}
+        .card{background:#fff;border-radius:16px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);padding:32px;}
+        .hero-card{max-width:896px;margin:0 auto;}
+
         /* Progress Steps */
-        .progress { display: flex; justify-content: space-between; margin-bottom: 32px; align-items: center; }
-        .step { display: flex; align-items: center; }
-        .step-circle { 
-            width: 40px; height: 40px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; transition: all 0.3s;
+        .progress{
+            display:flex;align-items:center;gap:12px;margin-bottom:32px;
         }
-        .step-circle.active { background: #2563eb; color: white; }
-        .step-circle.inactive { background: #e5e7eb; color: #6b7280; }
-        .step-line { width: 96px; height: 4px; margin: 0 8px; transition: all 0.3s; }
-        .step-line.active { background: #2563eb; }
-        .step-line.inactive { background: #e5e7eb; }
-        
+        .step-circle{
+            width:40px;height:40px;border-radius:50%;
+            display:flex;align-items:center;justify-content:center;font-weight:bold;transition:all .3s;
+        }
+        .step-circle.active{background:var(--brand);color:#fff;}
+        .step-circle.inactive{background:#e5e7eb;color:#6b7280;}
+        /* Make lines stretch fully between steps */
+        .step-line{flex:1;height:4px;border-radius:2px;transition:all .3s;}
+        .step-line.active{background:var(--brand);}
+        .step-line.inactive{background:#e5e7eb;}
+
         /* Buttons */
-        .btn { 
-            padding: 16px 32px; border-radius: 12px; font-weight: bold; 
-            font-size: 18px; border: none; cursor: pointer; transition: all 0.2s;
-        }
-        .btn-primary { background: #2563eb; color: white; }
-        .btn-primary:hover { background: #1d4ed8; }
-        .btn-primary:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
-        .btn-secondary { background: #f3f4f6; color: #374151; }
-        .btn-secondary:hover { background: #e5e7eb; }
-        .btn-gradient { background: linear-gradient(to right, #2563eb, #10b981); color: white; }
-        
+        .btn{padding:16px 32px;border-radius:12px;font-weight:bold;font-size:18px;border:none;cursor:pointer;transition:all .2s;}
+        .btn-primary{background:var(--brand);color:#fff;}
+        .btn-primary:hover{background:var(--brand-dark);}
+        .btn-primary:disabled{background:#e5e7eb;color:#9ca3af;cursor:not-allowed;}
+        .btn-secondary{background:#f3f4f6;color:#374151;}
+        .btn-secondary:hover{background:#e5e7eb;}
+        .btn-gradient{background:linear-gradient(to right,var(--brand),#48b0f7);color:#fff;}
+
         /* Property Type Cards */
-        .property-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
-        .property-card { 
-            padding: 24px; border-radius: 12px; border: 2px solid #e5e7eb;
-            background: white; cursor: pointer; transition: all 0.2s; text-align: left;
+        .property-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:32px;}
+        .property-card{
+            padding:24px;border-radius:12px;border:2px solid #e5e7eb;background:#fff;cursor:pointer;transition:all .2s;text-align:left;
         }
-        .property-card:hover { border-color: #2563eb; }
-        .property-card.selected { border-color: #2563eb; background: #eff6ff; }
-        .property-icon { font-size: 32px; margin-bottom: 8px; }
-        .property-name { font-size: 16px; font-weight: 600; color: #111827; }
-        
+        .property-card:hover{border-color:var(--brand);}
+        .property-card.selected{border-color:var(--brand);background:var(--brand-verylight);}
+        .property-icon{font-size:32px;margin-bottom:8px;}
+        .property-name{font-size:16px;font-weight:600;color:#111827;}
+
         /* Form Elements */
-        input[type="range"] { 
-            width: 100%; height: 12px; -webkit-appearance: none; appearance: none;
-            background: #e5e7eb; border-radius: 6px; outline: none;
+        input[type="range"]{
+            width:100%;height:12px;-webkit-appearance:none;appearance:none;background:#e5e7eb;border-radius:6px;outline:none;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; appearance: none;
-            width: 24px; height: 24px; background: #2563eb; border-radius: 50%; cursor: pointer;
+        input[type="range"]::-webkit-slider-thumb{
+            -webkit-appearance:none;appearance:none;width:24px;height:24px;background:var(--brand);border-radius:50%;cursor:pointer;
         }
-        input[type="range"]::-moz-range-thumb {
-            width: 24px; height: 24px; background: #2563eb; border-radius: 50%; cursor: pointer; border: none;
+        input[type="range"]::-moz-range-thumb{
+            width:24px;height:24px;background:var(--brand);border-radius:50%;cursor:pointer;border:none;
         }
-        input[type="text"] {
-            width: 100%; padding: 12px 16px; border: 2px solid #e5e7eb;
-            border-radius: 12px; font-size: 16px; outline: none;
+        input[type="text"]{
+            width:100%;padding:12px 16px;border:2px solid #e5e7eb;border-radius:12px;font-size:16px;outline:none;
         }
-        input[type="text"]:focus { border-color: #2563eb; }
-        
+        input[type="text"]:focus{border-color:var(--brand);}
+
         /* Loading */
-        .loading { text-align: center; }
-        .spinner { 
-            width: 96px; height: 96px; margin: 0 auto 24px; 
-            position: relative; animation: spin 1s linear infinite;
-        }
-        .spinner-ring { 
-            position: absolute; inset: 0; border: 8px solid #bfdbfe; 
-            border-radius: 50%; border-top-color: #2563eb;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .progress-bar { 
-            width: 100%; height: 16px; background: #e5e7eb; 
-            border-radius: 9999px; overflow: hidden; margin-bottom: 16px;
-        }
-        .progress-fill { 
-            height: 100%; background: linear-gradient(to right, #3b82f6, #10b981);
-            transition: width 0.3s;
-        }
-        
+        .loading{text-align:center;}
+        .spinner{width:96px;height:96px;margin:0 auto 24px;position:relative;animation:spin 1s linear infinite;}
+        .spinner-ring{position:absolute;inset:0;border:8px solid #bfdbfe;border-radius:50%;border-top-color:var(--brand);}
+        @keyframes spin{to{transform:rotate(360deg);}}
+        .progress-bar{width:100%;height:16px;background:#e5e7eb;border-radius:9999px;overflow:hidden;margin-bottom:16px;}
+        .progress-fill{height:100%;background:linear-gradient(to right,#60a5fa,var(--brand));transition:width .3s;}
+
         /* Results */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 48px; }
-        .stat-card { 
-            background: white; border-radius: 16px; 
-            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); padding: 32px;
-        }
-        .stat-card.green { border-top: 4px solid #10b981; }
-        .stat-card.blue { border-top: 4px solid #3b82f6; }
-        .stat-card.purple { border-top: 4px solid #8b5cf6; }
-        .stat-label { font-size: 12px; font-weight: 600; color: #4b5563; margin-bottom: 8px; }
-        .stat-value { font-size: 48px; font-weight: bold; margin-bottom: 8px; }
-        .stat-value.green { color: #10b981; }
-        .stat-value.blue { color: #3b82f6; }
-        .stat-value.purple { color: #8b5cf6; }
-        
+        .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:48px;}
+        .stat-card{background:#fff;border-radius:16px;box-shadow:0 10px 15px -3px rgba(0,0,0,.1);padding:32px;border-top:4px solid var(--brand);}
+        .stat-label{font-size:12px;font-weight:600;color:#4b5563;margin-bottom:8px;}
+        .stat-value{font-size:48px;font-weight:bold;margin-bottom:8px;color:var(--brand);}
+
         /* Comparison */
-        .comparison-toggle { 
-            display: inline-flex; background: #f3f4f6; 
-            border-radius: 9999px; padding: 4px; margin-bottom: 32px;
-        }
-        .toggle-btn { 
-            padding: 12px 24px; border-radius: 9999px; 
-            font-weight: 600; border: none; cursor: pointer; transition: all 0.3s;
-        }
-        .toggle-btn.active { background: white; color: #111827; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        .toggle-btn.inactive { background: transparent; color: #4b5563; }
-        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
-        .comparison-card { border-radius: 12px; padding: 24px; transition: opacity 0.3s; }
-        .comparison-card.dimmed { opacity: 0.3; }
-        .comparison-card.traditional { background: #fef2f2; border: 2px solid #fecaca; }
-        .comparison-card.pinpoint { background: #f0fdf4; border: 2px solid #bbf7d0; }
-        
-        .hidden { display: none; }
-        .flex { display: flex; }
-        .gap-4 { gap: 16px; }
-        .mb-4 { margin-bottom: 16px; }
-        .mb-8 { margin-bottom: 32px; }
-        .text-center { text-align: center; }
-        h1 { font-size: 48px; font-weight: bold; color: #111827; }
-        h2 { font-size: 36px; font-weight: bold; color: #111827; }
-        h3 { font-size: 24px; font-weight: bold; }
-        .text-gray { color: #4b5563; }
-        
-        @media (max-width: 768px) {
-            .comparison-grid { grid-template-columns: 1fr; }
-            .stats-grid { grid-template-columns: 1fr; }
-            h1 { font-size: 32px; }
-            h2 { font-size: 28px; }
+        .comparison-toggle{display:inline-flex;background:#f3f4f6;border-radius:9999px;padding:4px;margin-bottom:32px;}
+        .toggle-btn{padding:12px 24px;border-radius:9999px;font-weight:600;border:none;cursor:pointer;transition:all .3s;}
+        .toggle-btn.active{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.1);}
+        .toggle-btn.inactive{background:transparent;color:#4b5563;}
+        .comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
+        .comparison-card{border-radius:12px;padding:24px;transition:opacity .3s;}
+        .comparison-card.dimmed{opacity:.3;}
+        .comparison-card.traditional{background:#fef2f2;border:2px solid #fecaca;}
+        .comparison-card.pinpoint{background:#eff6ff;border:2px solid #bfdbfe;} /* blue theme */
+        .pinpoint-accent{color:var(--brand);} /* for headings in pinpoint card */
+
+        .hidden{display:none;}
+        .flex{display:flex;}
+        .gap-4{gap:16px;}
+        .mb-4{margin-bottom:16px;}
+        .mb-8{margin-bottom:32px;}
+        .text-center{text-align:center;}
+        h1{font-size:48px;font-weight:bold;color:#111827;}
+        h2{font-size:36px;font-weight:bold;color:#111827;}
+        h3{font-size:24px;font-weight:bold;}
+        .text-gray{color:#4b5563;}
+
+        @media (max-width:768px){
+            .comparison-grid{grid-template-columns:1fr;}
+            .stats-grid{grid-template-columns:1fr;}
+            h1{font-size:32px;}
+            h2{font-size:28px;}
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div id="app"></div>
-    </div>
+<div class="container">
+    <div id="app"></div>
+</div>
 
-    <script>
-        const state = {
-            step: 1,
-            propertyType: '',
-            acres: 5,
-            location: '',
-            isLoading: false,
-            loadingProgress: 0,
-            showComparison: 'traditional'
+<script>
+    const state = {
+        step: 1,
+        propertyType: '',
+        acres: 5,
+        location: '',
+        isLoading: false,
+        loadingProgress: 0,
+        showComparison: 'traditional'
+    };
+
+    const propertyTypes = [
+        { id: 'commercial', name: 'Commercial Development', icon: '🏢' },
+        { id: 'municipal', name: 'Municipal Park', icon: '🌳' },
+        { id: 'office', name: 'Office Campus', icon: '🏛️' },
+        { id: 'multifamily', name: 'Multifamily Residential', icon: '🏘️' },
+        { id: 'golf', name: 'Golf Course/Recreation', icon: '⛳' }
+    ];
+
+    function calculateSavings() {
+        const acres = state.acres;
+        const traditionalCost = acres * 22000;
+        const pinpointCost = acres * 11000;
+        return {
+            installationSavings: Math.round(traditionalCost - pinpointCost),
+            installationPercent: Math.round(((traditionalCost - pinpointCost) / traditionalCost) * 100),
+            waterSavingsGallons: Math.round(acres * 480000 * 0.52),
+            waterSavingsCost: Math.round(acres * 480000 * 0.52 * 0.008),
+            laborHoursSaved: Math.round(acres * 36),
+            installationDaysTraditional: Math.ceil(acres * 2.2),
+            installationDaysPinpoint: Math.ceil(acres * 0.8),
+            traditionalHeads: Math.round(acres * 16.8),
+            pinpointHeads: Math.round(acres * 2.4),
+            traditionalTrenching: Math.round(acres * 640),
+            pinpointTrenching: Math.round(acres * 128),
+            traditionalValves: Math.round(acres * 2.4)
         };
+    }
 
-        const propertyTypes = [
-            { id: 'commercial', name: 'Commercial Development', icon: '🏢' },
-            { id: 'municipal', name: 'Municipal Park', icon: '🌳' },
-            { id: 'office', name: 'Office Campus', icon: '🏛️' },
-            { id: 'multifamily', name: 'Multifamily Residential', icon: '🏘️' },
-            { id: 'golf', name: 'Golf Course/Recreation', icon: '⛳' }
-        ];
+    function render() {
+        const app = document.getElementById('app');
 
-        function calculateSavings() {
-            const acres = state.acres;
-            const traditionalCost = acres * 22000;
-            const pinpointCost = acres * 11000;
-            return {
-                installationSavings: Math.round(traditionalCost - pinpointCost),
-                installationPercent: Math.round(((traditionalCost - pinpointCost) / traditionalCost) * 100),
-                waterSavingsGallons: Math.round(acres * 480000 * 0.52),
-                waterSavingsCost: Math.round(acres * 480000 * 0.52 * 0.008),
-                laborHoursSaved: Math.round(acres * 36),
-                installationDaysTraditional: Math.ceil(acres * 2.2),
-                installationDaysPinpoint: Math.ceil(acres * 0.8),
-                traditionalHeads: Math.round(acres * 16.8),
-                pinpointHeads: Math.round(acres * 2.4),
-                traditionalTrenching: Math.round(acres * 640),
-                pinpointTrenching: Math.round(acres * 128),
-                traditionalValves: Math.round(acres * 2.4)
-            };
+        if (state.isLoading) {
+            app.innerHTML = renderLoading();
+        } else if (state.step === 4) {
+            app.innerHTML = renderResults();
+            attachResultsListeners();
+        } else {
+            app.innerHTML = renderWizard();
+            attachWizardListeners();
         }
+    }
 
-        function render() {
-            const app = document.getElementById('app');
-            
-            if (state.isLoading) {
-                app.innerHTML = renderLoading();
-            } else if (state.step === 4) {
-                app.innerHTML = renderResults();
-                attachResultsListeners();
-            } else {
-                app.innerHTML = renderWizard();
-                attachWizardListeners();
-            }
-        }
+    function renderLoading() {
+        const message = state.loadingProgress < 25 ? 'Analyzing site parameters...' :
+                        state.loadingProgress < 50 ? 'Calculating optimal head placement...' :
+                        state.loadingProgress < 75 ? 'Comparing against legacy systems...' :
+                        'Calculating your savings...';
 
-        function renderLoading() {
-            const message = state.loadingProgress < 25 ? 'Analyzing site parameters...' :
-                           state.loadingProgress < 50 ? 'Calculating optimal head placement...' :
-                           state.loadingProgress < 75 ? 'Comparing against legacy systems...' :
-                           'Calculating your savings...';
-            
-            return `
-                <div class="card hero-card loading">
-                    <div class="spinner"><div class="spinner-ring"></div></div>
-                    <h2 class="mb-4">${message}</h2>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${state.loadingProgress}%"></div>
-                    </div>
-                    <p style="font-size: 18px; color: #4b5563;">${state.loadingProgress}% complete</p>
-                    <div style="margin-top: 32px; font-size: 14px; color: #6b7280;">
-                        <p>✓ Analyzing ${Math.round(state.acres * 43560)} square feet</p>
-                        <p>✓ Referencing water rates for ${state.location}</p>
-                        <p>✓ Comparing against 1,200+ similar properties</p>
-                    </div>
+        return `
+            <div class="card hero-card loading">
+                <div class="spinner"><div class="spinner-ring"></div></div>
+                <h2 class="mb-4">${message}</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${state.loadingProgress}%"></div>
                 </div>
-            `;
-        }
+                <p style="font-size:18px;color:#4b5563;">${state.loadingProgress}% complete</p>
+                <div style="margin-top:32px;font-size:14px;color:#6b7280;">
+                    <p>✓ Analyzing ${Math.round(state.acres * 43560)} square feet</p>
+                    <p>✓ Referencing water rates for ${state.location || 'your area'}</p>
+                    <p>✓ Comparing against 1,200+ similar properties</p>
+                </div>
+            </div>
+        `;
+    }
 
-        function renderWizard() {
-            return `
-                <div class="card hero-card">
-                    ${renderProgress()}
-                    ${state.step === 1 ? renderStep1() : ''}
-                    ${state.step === 2 ? renderStep2() : ''}
-                    ${state.step === 3 ? renderStep3() : ''}
-                </div>
-            `;
-        }
+    function renderWizard() {
+        return `
+            <div class="card hero-card">
+                ${renderProgress()}
+                ${state.step === 1 ? renderStep1() : ''}
+                ${state.step === 2 ? renderStep2() : ''}
+                ${state.step === 3 ? renderStep3() : ''}
+            </div>
+        `;
+    }
 
-        function renderProgress() {
-            return `
-                <div class="progress">
-                    ${[1, 2, 3].map(num => `
-                        <div class="step">
-                            <div class="step-circle ${state.step >= num ? 'active' : 'inactive'}">${num}</div>
-                            ${num < 3 ? `<div class="step-line ${state.step > num ? 'active' : 'inactive'}"></div>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
+    function renderProgress() {
+        // 1 •———• 2 •———• 3 where lines stretch fully
+        return `
+            <div class="progress">
+                <div class="step-circle ${state.step >= 1 ? 'active' : 'inactive'}">1</div>
+                <div class="step-line ${state.step > 1 ? 'active' : 'inactive'}"></div>
+                <div class="step-circle ${state.step >= 2 ? 'active' : 'inactive'}">2</div>
+                <div class="step-line ${state.step > 2 ? 'active' : 'inactive'}"></div>
+                <div class="step-circle ${state.step >= 3 ? 'active' : 'inactive'}">3</div>
+            </div>
+        `;
+    }
 
-        function renderStep1() {
-            return `
-                <h2 class="mb-4">Select Property Type</h2>
-                <p class="text-gray mb-8">Choose the option that best describes your property</p>
-                <div class="property-grid">
-                    ${propertyTypes.map(type => `
-                        <div class="property-card ${state.propertyType === type.id ? 'selected' : ''}" data-type="${type.id}">
-                            <div class="property-icon">${type.icon}</div>
-                            <div class="property-name">${type.name}</div>
-                        </div>
-                    `).join('')}
-                </div>
-                <button class="btn btn-primary" style="width: 100%;" id="nextBtn" ${!state.propertyType ? 'disabled' : ''}>
-                    Continue →
-                </button>
-            `;
-        }
+    function renderStep1() {
+        return `
+            <h2 class="mb-4">Select Property Type</h2>
+            <p class="text-gray mb-8">Choose the option that best describes your property</p>
+            <div class="property-grid">
+                ${propertyTypes.map(type => `
+                    <div class="property-card ${state.propertyType === type.id ? 'selected' : ''}" data-type="${type.id}">
+                        <div class="property-icon">${type.icon}</div>
+                        <div class="property-name">${type.name}</div>
+                    </div>
+                `).join('')}
+            </div>
+            <button class="btn btn-primary" style="width:100%;" id="nextBtn">
+                Continue →
+            </button>
+        `;
+    }
 
-        function renderStep2() {
-            return `
-                <h2 class="mb-4">Property Details</h2>
-                <p class="text-gray mb-8">Help us calculate accurate savings</p>
-                <div class="mb-8">
-                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Property Size (acres)</label>
-                    <input type="range" min="1" max="50" value="${state.acres}" id="acresSlider">
-                    <div style="display: flex; justify-content: space-between; margin-top: 8px; color: #4b5563;">
-                        <span>1 acre</span>
-                        <span style="font-size: 24px; font-weight: bold; color: #2563eb;">${state.acres} acres</span>
-                        <span>50 acres</span>
-                    </div>
+    function renderStep2() {
+        return `
+            <h2 class="mb-4">Property Details</h2>
+            <p class="text-gray mb-8">Help us calculate accurate savings</p>
+            <div class="mb-8">
+                <label style="display:block;font-weight:600;margin-bottom:8px;">Property Size (acres)</label>
+                <input type="range" min="1" max="50" value="${state.acres}" id="acresSlider">
+                <div style="display:flex;justify-content:space-between;margin-top:8px;color:#4b5563;">
+                    <span>1 acre</span>
+                    <span style="font-size:24px;font-weight:bold;color:var(--brand);">${state.acres} acres</span>
+                    <span>50 acres</span>
                 </div>
-                <div class="mb-8">
-                    <label style="display: block; font-weight: 600; margin-bottom: 8px;">Location</label>
-                    <input type="text" id="locationInput" value="${state.location}" placeholder="Enter city or zip code">
-                </div>
-                <div class="flex gap-4">
-                    <button class="btn btn-secondary" style="flex: 1;" id="backBtn">← Back</button>
-                    <button class="btn btn-primary" style="flex: 1;" id="nextBtn" ${!state.location ? 'disabled' : ''}>Continue →</button>
-                </div>
-            `;
-        }
+            </div>
+            <div class="mb-8">
+                <label style="display:block;font-weight:600;margin-bottom:8px;">Location (city or ZIP)</label>
+                <input type="text" id="locationInput" value="${state.location}" placeholder="Enter city or zip code">
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-secondary" style="flex:1;" id="backBtn">← Back</button>
+                <button class="btn btn-primary" style="flex:1;" id="nextBtn">Continue →</button>
+            </div>
+        `;
+    }
 
-        function renderStep3() {
-            return `
-                <h2 class="mb-4">Review & Generate</h2>
-                <p class="text-gray mb-8">Confirm your details</p>
-                <div style="background: #f9fafb; border-radius: 12px; padding: 24px; margin-bottom: 32px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                        <span style="color: #4b5563;">Property Type:</span>
-                        <span style="font-weight: bold;">${state.propertyType}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                        <span style="color: #4b5563;">Property Size:</span>
-                        <span style="font-weight: bold;">${state.acres} acres</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span style="color: #4b5563;">Location:</span>
-                        <span style="font-weight: bold;">${state.location}</span>
-                    </div>
+    function renderStep3() {
+        return `
+            <h2 class="mb-4">Review & Generate</h2>
+            <p class="text-gray mb-8">Confirm your details</p>
+            <div style="background:#f9fafb;border-radius:12px;padding:24px;margin-bottom:32px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+                    <span style="color:#4b5563;">Property Type:</span>
+                    <span style="font-weight:bold;">${state.propertyType}</span>
                 </div>
-                <div class="flex gap-4">
-                    <button class="btn btn-secondary" style="flex: 1;" id="backBtn">← Back</button>
-                    <button class="btn btn-gradient" style="flex: 1;" id="generateBtn">Generate Report →</button>
+                <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+                    <span style="color:#4b5563;">Property Size:</span>
+                    <span style="font-weight:bold;">${state.acres} acres</span>
                 </div>
-            `;
-        }
+                <div style="display:flex;justify-content:space-between;">
+                    <span style="color:#4b5563;">Location:</span>
+                    <span style="font-weight:bold;">${state.location}</span>
+                </div>
+            </div>
+            <div class="flex gap-4">
+                <button class="btn btn-secondary" style="flex:1;" id="backBtn">← Back</button>
+                <button class="btn btn-gradient" style="flex:1;" id="generateBtn">Generate Report →</button>
+            </div>
+        `;
+    }
 
-        function renderResults() {
-            const savings = calculateSavings();
-            return `
-                <div class="text-center mb-8">
-                    <h1 class="mb-4">Your Savings Report</h1>
-                    <p style="font-size: 20px; color: #4b5563;">${state.propertyType} • ${state.acres} acres • ${state.location}</p>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card green">
-                        <div class="stat-label">INSTALLATION SAVINGS</div>
-                        <div class="stat-value green">$${savings.installationSavings.toLocaleString()}</div>
-                        <div style="font-size: 18px; color: #374151;">${savings.installationPercent}% lower than traditional</div>
-                    </div>
-                    <div class="stat-card blue">
-                        <div class="stat-label">ANNUAL WATER SAVINGS</div>
-                        <div class="stat-value blue">${(savings.waterSavingsGallons / 1000000).toFixed(1)}M</div>
-                        <div style="font-size: 18px; color: #374151;">gallons saved per year</div>
-                    </div>
-                    <div class="stat-card purple">
-                        <div class="stat-label">LABOR EFFICIENCY</div>
-                        <div class="stat-value purple">${savings.laborHoursSaved}</div>
-                        <div style="font-size: 18px; color: #374151;">hours saved</div>
-                    </div>
-                </div>
+    function renderResults() {
+        const savings = calculateSavings();
+        return `
+            <div class="text-center mb-8">
+                <h1 class="mb-4">Your Savings Report</h1>
+                <p style="font-size:20px;color:#4b5563;">${state.propertyType} • ${state.acres} acres • ${state.location}</p>
+            </div>
 
-                <div class="card mb-8">
-                    <div class="text-center">
-                        <h2 class="mb-4">System Comparison</h2>
-                        <div class="comparison-toggle">
-                            <button class="toggle-btn ${state.showComparison === 'traditional' ? 'active' : 'inactive'}" data-view="traditional">Traditional System</button>
-                            <button class="toggle-btn ${state.showComparison === 'pinpoint' ? 'active' : 'inactive'}" data-view="pinpoint">Pinpoint System</button>
-                        </div>
-                    </div>
-                    <div class="comparison-grid">
-                        <div class="comparison-card traditional ${state.showComparison === 'pinpoint' ? 'dimmed' : ''}">
-                            <h3 style="color: #7f1d1d; margin-bottom: 16px;">Traditional System</h3>
-                            <div style="color: #374151;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Spray heads:</span>
-                                    <span style="font-weight: bold; color: #dc2626;">${savings.traditionalHeads}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Trenching:</span>
-                                    <span style="font-weight: bold; color: #dc2626;">${savings.traditionalTrenching} ft</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Valve boxes:</span>
-                                    <span style="font-weight: bold; color: #dc2626;">${savings.traditionalValves}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span>Overspray:</span>
-                                    <span style="font-weight: bold; color: #dc2626;">18%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="comparison-card pinpoint ${state.showComparison === 'traditional' ? 'dimmed' : ''}">
-                            <h3 style="color: #14532d; margin-bottom: 16px;">Pinpoint System</h3>
-                            <div style="color: #374151;">
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Pinpoint heads:</span>
-                                    <span style="font-weight: bold; color: #16a34a;">${savings.pinpointHeads}</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Trenching:</span>
-                                    <span style="font-weight: bold; color: #16a34a;">${savings.pinpointTrenching} ft</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
-                                    <span>Valve boxes:</span>
-                                    <span style="font-weight: bold; color: #16a34a;">0</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between;">
-                                    <span>Overspray:</span>
-                                    <span style="font-weight: bold; color: #16a34a;">0%</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">INSTALLATION SAVINGS</div>
+                    <div class="stat-value">$${savings.installationSavings.toLocaleString()}</div>
+                    <div style="font-size:18px;color:#374151;">${savings.installationPercent}% lower than traditional</div>
                 </div>
+                <div class="stat-card">
+                    <div class="stat-label">ANNUAL WATER SAVINGS</div>
+                    <div class="stat-value">${(savings.waterSavingsGallons / 1_000_000).toFixed(1)}M</div>
+                    <div style="font-size:18px;color:#374151;">gallons saved per year</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">LABOR EFFICIENCY</div>
+                    <div class="stat-value">${savings.laborHoursSaved}</div>
+                    <div style="font-size:18px;color:#374151;">hours saved</div>
+                </div>
+            </div>
 
+            <div class="card mb-8">
                 <div class="text-center">
-                    <button class="btn btn-gradient" style="margin-bottom: 16px;">Request Detailed Consultation →</button>
-                    <div class="flex gap-4" style="justify-content: center;">
-                        <button class="btn btn-secondary">Download Full Report</button>
-                        <button class="btn btn-secondary" id="resetBtn">Try Another Property</button>
+                    <h2 class="mb-4">System Comparison</h2>
+                    <div class="comparison-toggle">
+                        <button class="toggle-btn ${state.showComparison === 'traditional' ? 'active' : 'inactive'}" data-view="traditional">Traditional System</button>
+                        <button class="toggle-btn ${state.showComparison === 'pinpoint' ? 'active' : 'inactive'}" data-view="pinpoint">Pinpoint System</button>
                     </div>
                 </div>
-            `;
+                <div class="comparison-grid">
+                    <div class="comparison-card traditional ${state.showComparison === 'pinpoint' ? 'dimmed' : ''}">
+                        <h3 style="color:#7f1d1d;margin-bottom:16px;">Traditional System</h3>
+                        <div style="color:#374151;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Spray heads:</span>
+                                <span style="font-weight:bold;color:#dc2626;">${savings.traditionalHeads}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Trenching:</span>
+                                <span style="font-weight:bold;color:#dc2626;">${savings.traditionalTrenching} ft</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Valve boxes:</span>
+                                <span style="font-weight:bold;color:#dc2626;">${savings.traditionalValves}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span>Overspray:</span>
+                                <span style="font-weight:bold;color:#dc2626;">18%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="comparison-card pinpoint ${state.showComparison === 'traditional' ? 'dimmed' : ''}">
+                        <h3 class="pinpoint-accent" style="margin-bottom:16px;">Pinpoint System</h3>
+                        <div style="color:#374151;">
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Pinpoint heads:</span>
+                                <span style="font-weight:bold;color:var(--brand);">${savings.pinpointHeads}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Trenching:</span>
+                                <span style="font-weight:bold;color:var(--brand);">${savings.pinpointTrenching} ft</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
+                                <span>Valve boxes:</span>
+                                <span style="font-weight:bold;color:var(--brand);">0</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;">
+                                <span>Overspray:</span>
+                                <span style="font-weight:bold;color:var(--brand);">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-gradient" style="margin-bottom:16px;">Request Detailed Consultation →</button>
+                <div class="flex gap-4" style="justify-content:center;">
+                    <button class="btn btn-secondary">Download Full Report</button>
+                    <button class="btn btn-secondary" id="resetBtn">Try Another Property</button>
+                </div>
+            </div>
+        `;
+    }
+
+    function attachWizardListeners() {
+        const propertyCards = document.querySelectorAll('.property-card');
+        propertyCards.forEach(card => {
+            card.addEventListener('click', () => {
+                state.propertyType = card.dataset.type;
+                render();
+            });
+        });
+
+        const acresSlider = document.getElementById('acresSlider');
+        if (acresSlider) {
+            acresSlider.addEventListener('input', (e) => {
+                state.acres = parseInt(e.target.value, 10);
+                render(); // keep live update for the acres label
+            });
         }
 
-        function attachWizardListeners() {
-            const propertyCards = document.querySelectorAll('.property-card');
-            propertyCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    state.propertyType = card.dataset.type;
-                    render();
-                });
+        const locationInput = document.getElementById('locationInput');
+        if (locationInput) {
+            // IMPORTANT: Don't re-render on every keystroke so the input isn't reset.
+            locationInput.addEventListener('input', (e) => {
+                state.location = e.target.value; // unlimited characters; no maxlength set
             });
+        }
 
-            const acresSlider = document.getElementById('acresSlider');
-            if (acresSlider) {
-                acresSlider.addEventListener('input', (e) => {
-                    state.acres = parseInt(e.target.value);
-                    render();
-                });
-            }
+        const nextBtn = document.getElementById('nextBtn');
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                state.step++;
+                render();
+            });
+        }
 
-            const locationInput = document.getElementById('locationInput');
-            if (locationInput) {
-                locationInput.addEventListener('input', (e) => {
-                    state.location = e.target.value;
-                    render();
-                });
-            }
+        const backBtn = document.getElementById('backBtn');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                state.step--;
+                render();
+            });
+        }
 
-            const nextBtn = document.getElementById('nextBtn');
-            if (nextBtn) {
-                nextBtn.addEventListener('click', () => {
-                    state.step++;
-                    render();
-                });
-            }
+        const generateBtn = document.getElementById('generateBtn');
+        if (generateBtn) {
+            generateBtn.addEventListener('click', () => {
+                state.isLoading = true;
+                render();
 
-            const backBtn = document.getElementById('backBtn');
-            if (backBtn) {
-                backBtn.addEventListener('click', () => {
-                    state.step--;
+                const interval = setInterval(() => {
+                    state.loadingProgress += 2;
+                    // Don't re-render every 2%? It's okay here for UX.
                     render();
-                });
-            }
 
-            const generateBtn = document.getElementById('generateBtn');
-            if (generateBtn) {
-                generateBtn.addEventListener('click', () => {
-                    state.isLoading = true;
-                    render();
-                    
-                    const interval = setInterval(() => {
-                        state.loadingProgress += 2;
+                    if (state.loadingProgress >= 100) {
+                        clearInterval(interval);
+                        state.isLoading = false;
+                        state.step = 4;
                         render();
-                        
-                        if (state.loadingProgress >= 100) {
-                            clearInterval(interval);
-                            state.isLoading = false;
-                            state.step = 4;
-                            render();
-                        }
-                    }, 90);
-                });
-            }
-        }
-
-        function attachResultsListeners() {
-            const toggleBtns = document.querySelectorAll('.toggle-btn');
-            toggleBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    state.showComparison = btn.dataset.view;
-                    render();
-                });
+                    }
+                }, 90);
             });
-
-            const resetBtn = document.getElementById('resetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    state.step = 1;
-                    state.propertyType = '';
-                    state.location = '';
-                    state.loadingProgress = 0;
-                    render();
-                });
-            }
         }
+    }
 
-        // Initial render
-        render();
-    </script>
+    function attachResultsListeners() {
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                state.showComparison = btn.dataset.view;
+                render();
+            });
+        });
+
+        const resetBtn = document.getElementById('resetBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', () => {
+                state.step = 1;
+                state.propertyType = '';
+                state.location = '';
+                state.loadingProgress = 0;
+                render();
+            });
+        }
+    }
+
+    // Initial render
+    render();
+</script>
 </body>
 </html>
